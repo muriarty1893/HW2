@@ -37,4 +37,5 @@ if __name__ == "__main__":
     plt.xticks(())
     plt.yticks(())
 
-    plt.show()
+    plt.savefig("grafik.png")
+
