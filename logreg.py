@@ -1,67 +1,47 @@
-
+import numpy as np
 
 class LogisticRegression:
 
-    def __init__(self, alpha = 0.01, regLambda=0.01, epsilon=0.0001, maxNumIters = 10000):
-        '''
-        Constructor
-        '''
-
-    
-
-    def computeCost(self, theta, X, y, regLambda):
-        '''
-        Computes the objective function
-        Arguments:
-            theta is d-dimensional numpy vector
-            X is a n-by-d numpy matrix
-            y is an n-dimensional numpy vector
-            regLambda is the scalar regularization constant
-        Returns:
-            a scalar value of the cost  ** make certain you're not returning a 1 x 1 matrix! **
-        '''
-
-    
-    
-    def computeGradient(self, theta, X, y, regLambda):
-        '''
-        Computes the gradient of the objective function
-        Arguments:
-            theta is d-dimensional numpy vector
-            X is a n-by-d numpy matrix
-            y is an n-dimensional numpy vector
-            regLambda is the scalar regularization constant
-        Returns:
-            the gradient, an d-dimensional vector
-        '''
-    
-
-
-    def fit(self, X, y):
-        '''
-        Trains the model
-        Arguments:
-            X is a n-by-d numpy matrix
-            y is an n-dimensional numpy vector
-        ** the d here is different from above! (due to augmentation) **
-        '''
-
-
-    def predict(self, X):
-        '''
-        Used the model to predict values for each instance in X
-        Arguments:
-            X is a n-by-d numpy matrix
-        Returns:
-            an n-dimensional numpy vector of the predictions, the output should be binary (use h_theta > .5)
-        '''
-
+    def __init__(self, ogrenme_orani=0.01, duzenleme_katsayisi=0.01, epsilon=0.0001, max_iterasyon=10000):
+        self.ogrenme_orani = ogrenme_orani
+        self.duzenleme_katsayisi = duzenleme_katsayisi
+        self.epsilon = epsilon
+        self.max_iterasyon = max_iterasyon
+        self.parametreler = None
 
     def sigmoid(self, Z):
-        '''
-        Applies the sigmoid function on every element of Z
-        Arguments:
-            Z can be a (n,) vector or (n , m) matrix
-        Returns:
-            A vector/matrix, same shape with Z, that has the sigmoid function applied elementwise
-        '''
+        return 1 / (1 + np.exp(-Z))
+
+    def maliyetHesapla(self, parametreler, X, y, duzenleme_katsayisi):
+        m = len(y)
+        tahmin = self.sigmoid(X @ parametreler)
+        maliyet = (-1 / m) * (y.T @ np.log(tahmin) + (1 - y).T @ np.log(1 - tahmin))
+        duzenleme_terimi = (duzenleme_katsayisi / (2 * m)) * np.sum(np.square(parametreler[1:]))
+        return maliyet + duzenleme_terimi
+
+    def gradyanHesapla(self, parametreler, X, y, duzenleme_katsayisi):
+        m = len(y)
+        tahmin = self.sigmoid(X @ parametreler)
+        gradyan = (1 / m) * (X.T @ (tahmin - y))
+        gradyan[1:] += (duzenleme_katsayisi / m) * parametreler[1:] 
+        return gradyan
+
+    def egit(self, X, y):
+        n, d = X.shape
+        X = np.c_[np.ones(n), X]
+        self.parametreler = np.zeros(d + 1)
+
+        for _ in range(self.max_iterasyon):
+            gradyan = self.gradyanHesapla(self.parametreler, X, y, self.duzenleme_katsayisi)
+            yeni_parametreler = self.parametreler - self.ogrenme_orani * gradyan
+
+            if np.linalg.norm(yeni_parametreler - self.parametreler, ord=1) < self.epsilon:
+                break
+            self.parametreler = yeni_parametreler
+
+    def tahmin(self, X):
+        if self.parametreler is None:
+            raise ValueError("Model egitilmedi. `egit` fonksiyonunu cagirin.")
+        X = np.c_[np.ones(X.shape[0]), X]  # Sabit terim ekleniyor
+        olasiliklar = self.sigmoid(X @ self.parametreler)
+        return (olasiliklar >= 0.5).astype(int)
