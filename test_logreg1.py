@@ -15,13 +15,13 @@ if __name__ == "__main__":
     X = (X - ortalama) / std_sapma
 
     logregModel = LogisticRegression(regLambda=0.00000001)
-    logregModel.egit(X, y)
+    logregModel.fit(X, y)
 
     h = .02
     x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
     y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-    Z = logregModel.tahmin(np.c_[xx.ravel(), yy.ravel()])
+    Z = logregModel.predict(np.c_[xx.ravel(), yy.ravel()])
 
     Z = Z.reshape(xx.shape)
     plt.figure(1, figsize=(4, 3))
