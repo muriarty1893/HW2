@@ -38,5 +38,5 @@ if __name__ == "__main__":
     plt.yticks(())
 
     plt.savefig("grafik.png")
-    # plt.show() çalışmadı, bende proje dizininde foto olarak olustutturdum.
+    # plt.show() calısmadı, bende proje dizininde foto olarak olustutturdum.
     print("plt.show() çalismadi, bende proje dizininde foto olarak olustutturdum (grafik.png).")
