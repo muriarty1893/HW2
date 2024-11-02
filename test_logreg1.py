@@ -38,4 +38,4 @@ if __name__ == "__main__":
     plt.yticks(())
 
     plt.savefig("grafik.png")
-
+    # plt.show() çalışmadı, bende dizinede foto olarak oluştutturdum.
