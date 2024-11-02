@@ -9,9 +9,6 @@ class LogisticRegression:
         self.maxNumIters = maxNumIters
         self.parametreler = None
 
-    def sigmoid(self, Z):
-        return 1 / (1 + np.exp(-Z))
-
     def computeCost(self, theta, X, y, regLambda):
         m = len(y)
         tahmin = self.sigmoid(X @ theta)
@@ -45,3 +42,6 @@ class LogisticRegression:
         X = np.c_[np.ones(X.shape[0]), X]
         olasiliklar = self.sigmoid(X @ self.parametreler)
         return (olasiliklar >= 0.5).astype(int)
+    
+    def sigmoid(self, Z):
+        return 1 / (1 + np.exp(-Z))
