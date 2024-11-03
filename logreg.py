@@ -3,10 +3,6 @@ import numpy as np
 class LogisticRegression:
 
     def __init__(self, alpha=0.01, regLambda=0.01, epsilon=0.0001, maxNumIters=10000):
-        self.alpha = alpha
-        self.regLambda = regLambda
-        self.epsilon = epsilon
-        self.maxNumIters = maxNumIters
         self.parametreler = None
 
     def computeCost(self, theta, X, y, regLambda):
@@ -45,3 +41,4 @@ class LogisticRegression:
     
     def sigmoid(self, Z):
         return 1 / (1 + np.exp(-Z))
+    
