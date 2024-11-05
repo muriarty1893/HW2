@@ -21,10 +21,10 @@ class LogisticRegression:
 
     def fit(self, X, y):
         n, d = X.shape
-        X = np.c_[np.ones(n), X]
+        X = np.concatenate((np.ones((n, 1)), X), axis=1)
         self.parametreler = np.zeros(d + 1)
 
-        for _ in range(self.maxNumIters):
+        for a in range(self.maxNumIters):
             gradyan = self.computeGradient(self.parametreler, X, y, self.regLambda)
             yeni_parametreler = self.parametreler - self.alpha * gradyan
 
@@ -33,12 +33,9 @@ class LogisticRegression:
             self.parametreler = yeni_parametreler
 
     def predict(self, X):
-        if self.parametreler is None:
-            raise ValueError("Model is not trained yet. Call `fit` before `predict`.")
-        X = np.c_[np.ones(X.shape[0]), X]
+        X = np.concatenate((np.ones((X.shape[0], 1)), X), axis=1)
         olasiliklar = self.sigmoid(X @ self.parametreler)
         return (olasiliklar >= 0.5).astype(int)
     
     def sigmoid(self, Z):
         return 1 / (1 + np.exp(-Z))
-    
