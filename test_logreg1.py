@@ -39,5 +39,5 @@ if __name__ == "__main__":
 
     # plt.show() # calısmadı, bende proje dizininde foto olarak olusturtturdum.
     plt.savefig("grafik.png")
-    print("plt.show() çalismadi, bende proje dizininde foto olarak olusturtturdum (grafik.png).")
+    print("plt.show() calismadi, bende proje dizininde foto olarak olusturtturdum (grafik.png).")
      
