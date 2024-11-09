@@ -4,6 +4,10 @@ class LogisticRegression:
 
     def __init__(self, alpha=0.01, regLambda=0.01, epsilon=0.0001, maxNumIters=10000):
         self.parametreler = None
+        self.alpha = alpha
+        self.regLambda = regLambda
+        self.epsilon = epsilon
+        self.maxNumIters = maxNumIters
 
     def computeCost(self, theta, X, y, regLambda):
         m = len(y)
