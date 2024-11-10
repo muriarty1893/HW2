@@ -2,44 +2,55 @@ import numpy as np
 
 class LogisticRegression:
 
-    def __init__(self, alpha=0.01, regLambda=0.01, epsilon=0.0001, maxNumIters=10000):
-        self.parametreler = None
+    def __init__(self, alpha = 0.01, regLambda=0.01, epsilon=0.0001, maxNumIters = 10000):
         self.alpha = alpha
         self.regLambda = regLambda
         self.epsilon = epsilon
         self.maxNumIters = maxNumIters
+        self.parametreler = None
 
-    def computeCost(self, theta, X, y, regLambda):
-        m = len(y)
-        tahmin = self.sigmoid(X @ theta)
-        maliyet = (-1 / m) * (y.T @ np.log(tahmin) + (1 - y).T @ np.log(1 - tahmin))
-        duzenleme_terimi = (regLambda / (2 * m)) * np.sum(np.square(theta[1:]))
+    def computeCost(self, parametreler, veri, etiket, regLambda):
+        ornek_sayisi = len(etiket)
+        tahminler = self.sigmoid(veri @ parametreler)
+        maliyet = (-1 / ornek_sayisi) * (etiket.T @ np.log(tahminler) + (1 - etiket).T @ np.log(1 - tahminler))
+        duzenleme_terimi = (regLambda / (2 * ornek_sayisi)) * np.sum(np.square(parametreler[1:]))
         return maliyet + duzenleme_terimi
 
-    def computeGradient(self, theta, X, y, regLambda):
-        m = len(y)
-        tahmin = self.sigmoid(X @ theta)
-        gradyan = (1 / m) * (X.T @ (tahmin - y))
-        gradyan[1:] += (regLambda / m) * theta[1:]
+    def computeGradient(self, parametreler, veri, etiket, regLambda):
+        ornek_sayisi = len(etiket)
+        tahminler = self.sigmoid(veri @ parametreler)
+        gradyan = (1 / ornek_sayisi) * (veri.T @ (tahminler - etiket))
+        gradyan[1:] += (regLambda / ornek_sayisi) * parametreler[1:]
         return gradyan
 
-    def fit(self, X, y):
-        n, d = X.shape
-        X = np.concatenate((np.ones((n, 1)), X), axis=1)
-        self.parametreler = np.zeros(d + 1)
+    def fit(self, veri, etiket):
+        ornek_sayisi, ozellik_sayisi = veri.shape
+        veri = np.concatenate([np.ones((ornek_sayisi, 1)), veri], axis=1)
+        self.parametreler = np.zeros(ozellik_sayisi + 1)
 
-        for a in range(self.maxNumIters):
-            gradyan = self.computeGradient(self.parametreler, X, y, self.regLambda)
+        for iterasyon in range(self.maxNumIters):
+            gradyan = self.computeGradient(self.parametreler, veri, etiket, self.regLambda)
             yeni_parametreler = self.parametreler - self.alpha * gradyan
 
-            if np.linalg.norm(yeni_parametreler - self.parametreler, ord=1) < self.epsilon:
+            # Convergence kontrolü
+            norm_degisim = np.linalg.norm(yeni_parametreler - self.parametreler, ord=2)
+            if norm_degisim <= self.epsilon:
+                print(f'Convergence reached at iteration {iterasyon}, Change in theta: {norm_degisim:.6f}')
                 break
+
             self.parametreler = yeni_parametreler
 
-    def predict(self, X):
-        X = np.concatenate((np.ones((X.shape[0], 1)), X), axis=1)
-        olasiliklar = self.sigmoid(X @ self.parametreler)
+        # Son iterasyondaki değişimi yazdır
+        if norm_degisim > self.epsilon:
+            print(f'Max iterations reached without full convergence. Final change in theta: {norm_degisim:.6f}')
+
+
+    def predict(self, veri):
+        if self.parametreler is None:
+            raise ValueError("Model is not trained yet. Call `fit` before `predict`.")
+        veri = np.concatenate([np.ones((veri.shape[0], 1)), veri], axis=1)
+        olasiliklar = self.sigmoid(veri @ self.parametreler)
         return (olasiliklar >= 0.5).astype(int)
-    
+
     def sigmoid(self, Z):
         return 1 / (1 + np.exp(-Z))

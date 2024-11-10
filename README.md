@@ -1,4 +1,4 @@
-# 🐟 Logistic Regression ile Sınıflandırma Projesi
+#  Logistic Regression ile Sınıflandırma Projesi
 
 Bu proje, logistic regression kullanarak veri sınıflandırmayı amaçlayan bir makine öğrenimi çalışmasıdır. `logreg.py` dosyasında Logistic Regression sınıfı tanımlanmış ve sınıflandırma işlemi için gerekli metodlar (sigmoid, cost ve gradient hesaplama, eğitim ve tahmin yapma) Python’da uygulanmıştır. `test_logreg1.py` dosyası ise veri setini yükleyerek modelin eğitilmesini ve görselleştirilmesini sağlar.
 
